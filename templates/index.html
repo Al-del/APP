@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <title>Distance Tracker</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Distance Tracker</h1>
+        <div class="distance-info">
+            <p>Your current distance from the person: <span id="distance">0</span> meters</p>
+            <p>Distance Limit: <span id="distanceLimit">{{ distance_limit }}</span> meters</p>
+        </div>
+    </div>
+
+    <script>
+        const updateInterval = 5000; // 5 seconds
+
+        const updateDistance = async () => {
+            try {
+                const response = await fetch('/get_distance');
+                const data = await response.json();
+
+                // Update the distance value in the HTML
+                document.getElementById('distance').innerText = data.distance;
+
+                // Update the distance limit value in the HTML
+                document.getElementById('distanceLimit').innerText = data.limit;
+
+            } catch (error) {
+                console.error('Error fetching distance data:', error);
+            }
+        };
+
+        // Initial update
+        updateDistance();
+
+        // Periodically update the distance data
+        setInterval(updateDistance, updateInterval);
+    </script>
+</body>
+</html>
